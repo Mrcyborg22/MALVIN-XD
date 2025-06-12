@@ -34,13 +34,13 @@ LINK_WHITELIST: "youtube.com,github.com",
 // set the auto reply massage on status reply  
 
 
-       WELCOME: process.env.WELCOME || "true",
+       WELCOME: process.env.WELCOME || "false",
 // true if want welcome and goodbye msg in groups 
    
        ADMIN_EVENTS: process.env.ADMIN_EVENTS || "false",
 // make true to know who dismiss or promoted a member in group
 
-      ANTI_LINK: process.env.ANTI_LINK || "true",
+      ANTI_LINK: process.env.ANTI_LINK || "false",
 // make anti link true,false for groups 
 
       MENTION_REPLY: process.env.MENTION_REPLY || "false",
@@ -112,7 +112,7 @@ OWNER_NAME: process.env.OWNER_NAME || "ᴍᴀʟᴠɪɴ ᴛᴇᴄʜ",
      DEV: process.env.DEV || "263780166288",
 //replace with your whatsapp number    
     
-    ANTI_VV: process.env.ANTI_VV || "true",
+    ANTI_VV: process.env.ANTI_VV || "false",
 // true for anti once view 
 
       ANTI_DEL_PATH: process.env.ANTI_DEL_PATH || "inbox", 
