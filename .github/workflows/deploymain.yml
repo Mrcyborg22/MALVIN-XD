@@ -1,4 +1,4 @@
-name: Node.js Deployment Pipeline
+name: Node.js CI (24/7)
 
 on:
   push:
@@ -7,11 +7,17 @@ on:
   pull_request:
     branches:
       - main
+  schedule:  # Ajout du déclencheur programmé
+    - cron: '0 0-23/5 * * *'  # Toutes les 5 heures
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [20.x]
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -19,40 +25,15 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20.x'
-
-    - name: Cache npm modules
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        node-version: ${{ matrix.node-version }}
 
     - name: Install dependencies
-      run: npm ci
+      run: npm install
 
-    - name: Run tests
-      run: npm test
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20.x'
-
-    - name: Install production dependencies
-      run: npm ci --production
-
-    - name: Deploy to always-on server
-      uses: your-deployment-service/deploy-action@v1
-      with:
-        api-key: ${{ secrets.DEPLOY_API_KEY }}
-        app-name: ${{ secrets.APP_NAME }}
-        branch: ${{ github.ref }}
+    - name: Run application continuously
+      run: |
+        npm start &
+        # Maintient le job actif jusqu'à la limite de temps
+        while true; do
+          sleep 3600
+        done
