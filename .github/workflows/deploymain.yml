@@ -1,4 +1,4 @@
-name: Node.js CI (24/7)
+name: Node.js CI
 
 on:
   push:
@@ -7,11 +7,10 @@ on:
   pull_request:
     branches:
       - main
-  schedule:  # Ajout du déclencheur programmé
-    - cron: '0 0-23/5 * * *'  # Toutes les 5 heures
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -30,10 +29,12 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Run application continuously
-      run: |
-        npm start &
-        # Maintient le job actif jusqu'à la limite de temps
-        while true; do
-          sleep 3600
-        done
+    - name: Start application
+      run: npm start
+      # Ajout d'un temps d'exécution prolongé
+      continue-on-error: true
+      timeout-minutes: 720 # 12 heures en minutes (nécessite un référentiel privé)
+
+    - name: Maintien en vie pendant 12h
+      if: always()
+      run: sleep 43200 # 12h en secondes (nécessite un référentiel privé)
